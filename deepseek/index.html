@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Demo</title>
+</head>
+<body>
+    <h1>WebSocket Demo</h1>
+    <input type="text" id="messageInput" placeholder="Ketik pesan...">
+    <button onclick="sendMessage()">Kirim</button>
+    <pre id="output"></pre>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8080/ws");
+
+        socket.onopen = function(event) {
+            appendOutput("Terhubung ke server!");
+        };
+
+        socket.onmessage = function(event) {
+            appendOutput("Menerima pesan: " + event.data);
+        };
+
+        socket.onclose = function(event) {
+            appendOutput("Koneksi ditutup.");
+        };
+
+        socket.onerror = function(error) {
+            appendOutput("Error: " + error.message);
+        };
+
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+            const message = input.value;
+            socket.send(message);
+            appendOutput("Mengirim pesan: " + message);
+            input.value = "";
+        }
+
+        function appendOutput(message) {
+            const output = document.getElementById("output");
+            output.textContent += message + "\n";
+        }
+    </script>
+</body>
+</html>
